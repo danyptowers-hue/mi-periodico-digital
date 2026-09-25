@@ -1,0 +1,1821 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>W.I.N - World Information Network</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* VARIABLES MANUAL DE MARCA W.I.N */
+    :root {
+      --color-marfil: #F5F1E8;
+      --color-carbon: #1F1F1B;
+      --color-azul-tinta: #1D3557;
+      --color-rosa-maquilishuat: #FFC0CB;
+      --font-mont: 'Montserrat', sans-serif;
+    }
+
+    body {
+      background-color: var(--color-marfil);
+      color: var(--color-carbon);
+      font-family: var(--font-mont);
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    #lavaCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0.85;
+    }
+
+    h1, h2, h3, h4, h5, h6, .fw-bold {
+      font-weight: 700;
+    }
+
+    .brand-header {
+      background: rgba(245, 241, 232, 0.45);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 2px solid var(--color-carbon);
+    }
+    .brand-title {
+      font-weight: 900;
+      letter-spacing: 8px;
+      color: var(--color-carbon);
+      font-size: 3rem;
+    }
+    .brand-slogan {
+      font-size: 0.88rem;
+      letter-spacing: 2px;
+      color: var(--color-carbon);
+      border-top: 1.5px solid var(--color-carbon);
+      display: inline-block;
+      padding-top: 2px;
+      font-weight: 700;
+    }
+
+    .glass-header-nav {
+      position: sticky;
+      top: 10px;
+      z-index: 1000;
+      width: 95%;
+      max-width: 1300px;
+      margin: 0 auto 20px auto;
+      background: rgba(29, 53, 87, 0.82) !important;
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 50px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+      padding: 4px 18px;
+    }
+
+    .navbar-win .nav-link {
+      color: var(--color-marfil) !important;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.5px;
+      padding: 6px 12px !important;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .navbar-win .nav-link:hover, 
+    .navbar-win .nav-link.active,
+    .navbar-win .show > .nav-link {
+      color: var(--color-carbon) !important;
+      background-color: var(--color-rosa-maquilishuat);
+      border-radius: 20px;
+    }
+
+    .dropdown-menu-win {
+      background: rgba(31, 31, 27, 0.92) !important;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--color-rosa-maquilishuat);
+      border-radius: 12px;
+      padding: 8px 0;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .dropdown-menu-win .dropdown-item {
+      color: var(--color-marfil) !important;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 7px 18px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .dropdown-menu-win .dropdown-item:hover {
+      background-color: var(--color-rosa-maquilishuat);
+      color: var(--color-carbon) !important;
+    }
+
+    .hero-3d-wrapper {
+      position: relative;
+      height: 380px;
+      perspective: 1000px;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(255,192,203,0.3) 0%, rgba(29,53,87,0.1) 100%);
+      border-bottom: 2px solid var(--color-carbon);
+      border-top: 2px solid var(--color-carbon);
+    }
+    .layer-container {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.1s ease-out;
+    }
+    .layer {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: none;
+    }
+    .layer-bg-grid {
+      background-image: radial-gradient(var(--color-azul-tinta) 1.5px, transparent 1.5px);
+      background-size: 26px 26px;
+      opacity: 0.2;
+      transform: translateZ(-80px) scale(1.2);
+    }
+    .layer-text-front {
+      transform: translateZ(60px);
+      text-shadow: 0px 8px 15px rgba(0,0,0,0.15);
+    }
+    .badge-maquilishuat {
+      background-color: var(--color-rosa-maquilishuat);
+      color: var(--color-carbon);
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      border: 1px solid var(--color-carbon);
+    }
+
+    .card-win {
+      background-color: #FFFFFF;
+      border: 2px solid var(--color-carbon);
+      border-radius: 0;
+      transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+      box-shadow: 4px 4px 0px var(--color-carbon);
+    }
+    .card-win:hover {
+      transform: translateY(-6px) translateX(-2px);
+      box-shadow: 8px 8px 0px var(--color-azul-tinta);
+    }
+    .card-img-wrapper {
+      position: relative;
+      overflow: hidden;
+      border-bottom: 2px solid var(--color-carbon);
+      height: 200px;
+    }
+    .card-img-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+    .card-win:hover .card-img-wrapper img {
+      transform: scale(1.06);
+    }
+
+    .btn-win-primary {
+      background-color: var(--color-azul-tinta);
+      color: var(--color-marfil);
+      border-radius: 0;
+      border: 1px solid var(--color-carbon);
+      font-weight: 700;
+      padding: 8px 16px;
+      transition: all 0.2s ease;
+    }
+    .btn-win-primary:hover {
+      background-color: var(--color-rosa-maquilishuat);
+      color: var(--color-carbon);
+    }
+    .btn-win-accent {
+      background-color: var(--color-rosa-maquilishuat);
+      color: var(--color-carbon);
+      border-radius: 0;
+      border: 1px solid var(--color-carbon);
+      font-weight: 800;
+      padding: 6px 14px;
+      font-size: 0.85rem;
+    }
+    .btn-win-accent:hover {
+      background-color: var(--color-azul-tinta);
+      color: #FFFFFF;
+    }
+
+    .screen-view {
+      display: none;
+    }
+    .screen-view.active {
+      display: block;
+      animation: fadeInUp 0.4s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .table-win {
+      border: 2px solid var(--color-carbon);
+    }
+    .table-win th {
+      background-color: var(--color-azul-tinta);
+      color: var(--color-marfil);
+      padding: 10px;
+    }
+
+    .multimedia-box {
+      border: 2px solid var(--color-carbon);
+      background-color: #FFFFFF;
+      padding: 30px;
+      box-shadow: 6px 6px 0px var(--color-carbon);
+      margin-bottom: 25px;
+    }
+
+    .infografic-stat-card {
+      background-color: var(--color-marfil);
+      border: 2px solid var(--color-carbon);
+      padding: 20px;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    .infografic-stat-card:hover {
+      transform: scale(1.03);
+    }
+
+    .article-img {
+      width: 100%;
+      max-height: 420px;
+      object-fit: cover;
+      border: 2px solid var(--color-carbon);
+      margin-bottom: 25px;
+    }
+
+    footer {
+      background-color: var(--color-carbon);
+      color: var(--color-marfil);
+      border-top: 5px solid var(--color-rosa-maquilishuat);
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="lavaCanvas"></canvas>
+
+  <header class="brand-header text-center py-3">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-3 text-center text-md-start mb-2 mb-md-0"></div>
+        <div class="col-md-6 text-center">
+          <h1 class="brand-title mb-0">W. I. N</h1>
+          <div class="brand-slogan">DONDE LA TRADICIÓN, INFORMA AL PRESENTE</div>
+        </div>
+        <div class="col-md-3 text-center text-md-end mt-2 mt-md-0">
+          <button class="btn btn-win-accent shadow-sm" onclick="navigateTo('view-auth')" id="navAuthBtn">
+            <i class="bi bi-person-circle"></i> Iniciar Sesión
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <nav class="navbar navbar-expand-lg navbar-win glass-header-nav">
+    <div class="container-fluid p-0">
+      <a class="navbar-brand text-white fw-bold d-lg-none ps-3 fs-6" onclick="navigateTo('view-home')">W.I.N DIGITAL</a>
+      <button class="navbar-toggler text-white border-0 me-2" type="button" data-bs-toggle="collapse" data-bs-target="#navWIN">
+        <i class="bi bi-list fs-2 text-white"></i>
+      </button>
+      
+      <div class="collapse navbar-collapse justify-content-center" id="navWIN">
+        <ul class="navbar-nav align-items-center">
+          <li class="nav-item"><a class="nav-link nav-btn active" onclick="navigateTo('view-home', this)">Inicio</a></li>
+          
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Deportes</a>
+            <ul class="dropdown-menu dropdown-menu-win">
+              <li><a class="dropdown-item" onclick="filterBySub('Balón en Juego')">⚽ Balón en Juego</a></li>
+              <li><a class="dropdown-item" onclick="filterBySub('Bajo el Aro')">🏀 Bajo el Aro</a></li>
+              <li><a class="dropdown-item" onclick="filterBySub('A Fondo')">🏎️ A Fondo</a></li>
+              <li><a class="dropdown-item" onclick="filterBySub('Cinco Aros')">🥇 Cinco Aros</a></li>
+              <li><a class="dropdown-item" onclick="filterBySub('Modo Gamer')">🎮 Modo Gamer</a></li>
+              <li><a class="dropdown-item" onclick="filterBySub('Cara a Cara')">🎙️ Cara a Cara</a></li>
+              <li><a class="dropdown-item" onclick="filterBySub('Números del Juego')">📊 Números del Juego</a></li>
+            </ul>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Economía</a>
+            <ul class="dropdown-menu dropdown-menu-win">
+              <li><a class="dropdown-item" onclick="filterBySub('Casa Adentro')">🏠 Casa Adentro</a></li>
+              <li><a class="dropdown-item" onclick="filterBySub('Fuera de Fronteras')">🌐 Fuera de Fronteras</a></li>
+              <li><a class="dropdown-item" onclick="filterBySub('De Cero a Marca')">🚀 De Cero a Marca</a></li>
+              <li><a class="dropdown-item" onclick="filterBySub('Jugadas de Negocio')">💼 Jugadas de Negocio</a></li>
+              <li><a class="dropdown-item" onclick="filterBySub('Sembrando Capital')">🌱 Sembrando Capital</a></li>
+              <li><a class="dropdown-item" onclick="filterBySub('El Tablero')">📈 El Tablero</a></li>
+              <li><a class="dropdown-item" onclick="filterBySub('Chamba Hoy')">🛠️ Chamba Hoy</a></li>
+            </ul>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Cultura</a>
+            <ul class="dropdown-menu dropdown-menu-win">
+              <li><a class="dropdown-item" onclick="filterBySub('Trazo Libre')">🎨 Trazo Libre</a></li>
+              <li><a class="dropdown-item" onclick="filterBySub('Entre Líneas')">📚 Entre Líneas</a></li>
+              <li><a class="dropdown-item" onclick="filterBySub('Memoria Viva')">🏛️ Memoria Viva</a></li>
+              <li><a class="dropdown-item" onclick="filterBySub('Sonido Propio')">🎵 Sonido Propio</a></li>
+              <li><a class="dropdown-item" onclick="filterBySub('A la Mesa')">🍽️ A la Mesa</a></li>
+              <li><a class="dropdown-item" onclick="filterBySub('En Vitrina')">🖼️ En Vitrina</a></li>
+              <li><a class="dropdown-item" onclick="filterBySub('De Generación en Generación')">🤝 De Generación en Generación</a></li>
+            </ul>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Entretenimiento</a>
+            <ul class="dropdown-menu dropdown-menu-win">
+              <li><a class="dropdown-item" onclick="filterBySub('Luces, Cámara')">🎬 Luces, Cámara</a></li>
+              <li><a class="dropdown-item" onclick="filterBySub('Play Directo')">📺 Play Directo</a></li>
+              <li><a class="dropdown-item" onclick="filterBySub('En Repeat')">🎧 En Repeat</a></li>
+              <li><a class="dropdown-item" onclick="filterBySub('Bajo los Reflectores')">🌟 Bajo los Reflectores</a></li>
+              <li><a class="dropdown-item" onclick="filterBySub('Nivel Up')">👾 Nivel Up</a></li>
+              <li><a class="dropdown-item" onclick="filterBySub('En Vivo')">🎤 En Vivo</a></li>
+              <li><a class="dropdown-item" onclick="filterBySub('Lo Que se Viene')">🔮 Lo Que se Viene</a></li>
+            </ul>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Salud</a>
+            <ul class="dropdown-menu dropdown-menu-win">
+              <li><a class="dropdown-item" onclick="filterBySub('Diagnóstico Claro')">🩺 Diagnóstico Claro</a></li>
+              <li><a class="dropdown-item" onclick="filterBySub('Buena Vibra')">✨ Buena Vibra</a></li>
+              <li><a class="dropdown-item" onclick="filterBySub('Mente en Paz')">🧠 Mente en Paz</a></li>
+              <li><a class="dropdown-item" onclick="filterBySub('Plato Consciente')">🥗 Plato Consciente</a></li>
+              <li><a class="dropdown-item" onclick="filterBySub('Antes que Después')">🛡️ Antes que Después</a></li>
+              <li><a class="dropdown-item" onclick="filterBySub('La Salud del Futuro')">🔬 La Salud del Futuro</a></li>
+            </ul>
+          </li>
+
+          <li class="nav-item"><a class="nav-link nav-btn" onclick="navigateTo('view-multimedia', this)">Multimedia</a></li>
+          <li class="nav-item"><a class="nav-link nav-btn" onclick="navigateTo('view-about', this)">Editorial</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div id="view-home" class="screen-view active">
+    <div class="hero-3d-wrapper" id="heroParallax">
+      <div class="layer-container" id="layerContainer">
+        <div class="layer layer-bg-grid"></div>
+        <div class="layer layer-text-front text-center">
+          <div>
+            <span class="badge badge-maquilishuat px-3 py-2 mb-2">PERIODISMO DIGITAL ESPECIALIZADO</span>
+            <h2 class="display-3 fw-bold" style="color: var(--color-azul-tinta);">World Information Network</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container my-5">
+      <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-dark pb-2">
+        <h3 class="fw-bold m-0" style="color: var(--color-azul-tinta);"><i class="bi bi-newspaper"></i> Edición Principal</h3>
+        <span class="badge bg-dark text-white p-2" id="artCountBadge">Cargando...</span>
+      </div>
+
+      <div class="row g-4" id="newsGrid"></div>
+    </div>
+  </div>
+
+  <div id="view-section" class="screen-view">
+    <div class="container my-5">
+      <button class="btn btn-outline-dark btn-sm mb-4 fw-bold" onclick="navigateTo('view-home')">
+        <i class="bi bi-arrow-left"></i> Volver al Inicio
+      </button>
+      <h2 id="sectionTitle" class="display-5 fw-bold border-bottom border-dark pb-3 mb-4" style="color: var(--color-azul-tinta);">
+        Categoría
+      </h2>
+      <div class="row g-4" id="sectionNewsGrid"></div>
+    </div>
+  </div>
+
+  <div id="view-article" class="screen-view">
+    <div class="container my-5">
+      <button class="btn btn-outline-dark btn-sm mb-4 fw-bold" onclick="goBackToPrevious()">
+        <i class="bi bi-arrow-left"></i> Regresar
+      </button>
+      <div class="row justify-content-center">
+        <div class="col-lg-9 bg-white p-4 p-md-5 border border-dark shadow-sm">
+          <div class="d-flex gap-2 mb-2">
+            <span id="artCategory" class="badge badge-maquilishuat">Categoría</span>
+            <span id="artSubCategory" class="badge bg-dark text-white">Subsección</span>
+          </div>
+          <h1 id="artTitle" class="fw-bold mb-3" style="color: var(--color-azul-tinta);">Título de la Noticia</h1>
+          <div class="text-muted small mb-4 pb-2 border-bottom">
+            Por <strong id="artAuthor">Autor</strong> | Publicado: <span id="artDate">Fecha</span> | <span id="artLocation">Lugar</span>
+          </div>
+
+          <div id="artContent" class="fs-5 lh-lg mb-4"></div>
+
+          <div class="border-top pt-3 mb-4 text-muted small">
+            <strong>Fuente principal:</strong> <span id="artSource">Fuente</span>
+          </div>
+
+          <hr class="my-5">
+          <h4 class="fw-bold mb-3"><i class="bi bi-chat-dots-fill"></i> Comentarios de Lectores</h4>
+          <div id="commentsList" class="mb-4"></div>
+
+          <form id="commentForm" onsubmit="saveComment(event)">
+            <div class="mb-3">
+              <input type="text" id="commentUser" class="form-control rounded-0 border-dark" placeholder="Tu Nombre Completo" required>
+            </div>
+            <div class="mb-3">
+              <textarea id="commentText" class="form-control rounded-0 border-dark" rows="3" placeholder="Escribe tu opinión objetiva..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-win-primary">Publicar Comentario</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN MULTIMEDIA CON INFOGRAFÍA PERIODÍSTICA DE W.I.N -->
+  <div id="view-multimedia" class="screen-view">
+    <div class="container my-5">
+      <button class="btn btn-outline-dark btn-sm mb-4 fw-bold" onclick="navigateTo('view-home')">
+        <i class="bi bi-arrow-left"></i> Regresar al Inicio
+      </button>
+
+      <div class="d-flex justify-content-between align-items-center border-bottom border-dark pb-3 mb-4">
+        <h2 class="display-5 fw-bold m-0" style="color: var(--color-azul-tinta);">
+          Infografía Periodística W.I.N
+        </h2>
+        <span class="badge badge-maquilishuat fs-6 px-3 py-2">DEPORTES & TENDENCIAS</span>
+      </div>
+
+      <div class="multimedia-box">
+        <!-- Encabezado Infografía -->
+        <div class="text-center border-bottom border-dark pb-4 mb-4">
+          <span class="badge bg-dark text-white uppercase px-3 py-1 mb-2" style="letter-spacing: 1px;">ANÁLISIS GRÁFICO ESPECIAL</span>
+          <h1 class="display-4 fw-black text-uppercase" style="color: var(--color-azul-tinta); letter-spacing: -1px;">El Efecto Messi en la MLS</h1>
+          <p class="fs-5 text-muted max-w-2xl mx-auto mb-0">
+            Cómo la llegada del astro argentino transformó el fútbol en Estados Unidos y rompió récords dentro y fuera de la cancha.
+          </p>
+        </div>
+
+        <!-- Métricas / Bloques Estadísticos -->
+        <div class="row g-4 mb-5">
+          <div class="col-md-4">
+            <div class="infografic-stat-card">
+              <i class="bi bi-trophy-fill fs-1 text-warning mb-2"></i>
+              <h2 class="display-5 fw-bold my-1" style="color: var(--color-azul-tinta);">1.er Título</h2>
+              <p class="fw-bold mb-1">Leagues Cup</p>
+              <small class="text-muted">Primer trofeo oficial en la historia de la franquicia Inter Miami y 12 partidos invictos tras su debut.</small>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="infografic-stat-card">
+              <i class="bi bi-tv-fill fs-1 text-primary mb-2"></i>
+              <h2 class="display-5 fw-bold my-1" style="color: var(--color-azul-tinta);">+110%</h2>
+              <p class="fw-bold mb-1">Audiencia Global</p>
+              <small class="text-muted">Nuevos suscriptores en Apple TV (MLS Season Pass), convirtiendo al club en el 4.° más seguido en EE. UU.</small>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="infografic-stat-card">
+              <i class="bi bi-ticket-perforated-fill fs-1 text-danger mb-2"></i>
+              <h2 class="display-5 fw-bold my-1" style="color: var(--color-azul-tinta);">+1,000%</h2>
+              <p class="fw-bold mb-1">Reventa de Entradas</p>
+              <small class="text-muted">Llenos totales históricos en más de 12 estadios visitantes a lo largo de toda la liga estadounidense.</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Línea de Tiempo / Timeline -->
+        <div class="p-4 border border-dark mb-4" style="background-color: var(--color-marfil);">
+          <h4 class="fw-bold mb-4" style="color: var(--color-azul-tinta);"><i class="bi bi-clock-history"></i> Cronología del Hito Deportivo</h4>
+          <div class="row g-3">
+            <div class="col-md-4 border-end border-dark pe-md-3">
+              <span class="badge bg-dark text-white mb-2">JULIO</span>
+              <h5 class="fw-bold">Debut Soñado</h5>
+              <p class="small text-muted mb-0">Gol de tiro libre en el último minuto ante Cruz Azul que dio la vuelta al mundo en redes sociales.</p>
+            </div>
+            <div class="col-md-4 border-end border-dark pe-md-3 ps-md-3">
+              <span class="badge bg-dark text-white mb-2">AGOSTO</span>
+              <h5 class="fw-bold">Primer Campeonato</h5>
+              <p class="small text-muted mb-0">Levantamiento de la Leagues Cup como capitán, anotando 10 goles en apenas 7 partidos disputados.</p>
+            </div>
+            <div class="col-md-4 ps-md-3">
+              <span class="badge bg-dark text-white mb-2">SEPTIEMBRE</span>
+              <h5 class="fw-bold">Récord de Asistencia</h5>
+              <p class="small text-muted mb-0">Récords históricos de asistencia en todos los recintos deportivos de la Conferencia Este.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pie de la Infografía -->
+        <div class="d-flex justify-content-between align-items-center pt-3 border-top border-dark text-muted small">
+          <span><strong>Fuente:</strong> Redacción W.I.N (Sección Deportes)</span>
+          <span><strong>Diseño Infográfico:</strong> W.I.N Newsroom</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="view-auth" class="screen-view">
+    <div class="container my-5">
+      <button class="btn btn-outline-dark btn-sm mb-4 fw-bold" onclick="navigateTo('view-home')">
+        <i class="bi bi-arrow-left"></i> Regresar al Inicio
+      </button>
+
+      <div class="row justify-content-center g-4">
+        <div class="col-lg-6">
+          <div class="p-4 p-md-5 bg-white border border-dark shadow-sm">
+            <ul class="nav nav-pills nav-justified mb-4" id="authTabs" role="tablist">
+              <li class="nav-item">
+                <button class="nav-link active rounded-0 border border-dark fw-bold" id="tab-login" data-bs-toggle="pill" data-bs-target="#content-login" type="button">Iniciar Sesión</button>
+              </li>
+              <li class="nav-item">
+                <button class="nav-link rounded-0 border border-dark fw-bold ms-2" id="tab-register" data-bs-toggle="pill" data-bs-target="#content-register" type="button">Crear Cuenta</button>
+              </li>
+            </ul>
+
+            <div class="tab-content" id="authTabContent">
+              <div class="tab-pane fade show active" id="content-login" role="tabpanel">
+                <h4 class="fw-bold mb-3" style="color: var(--color-azul-tinta);"><i class="bi bi-box-arrow-in-right"></i> Acceso a Lectores</h4>
+                <p class="small text-muted mb-4">Ingresa tu correo y contraseña registrados para acceder a tu sesión activa.</p>
+
+                <form onsubmit="handleLogin(event)">
+                  <div class="mb-3">
+                    <label class="form-label fw-bold small">Correo Electrónico</label>
+                    <input type="email" id="loginEmail" class="form-control rounded-0 border-dark" placeholder="correo@ejemplo.com" required>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label fw-bold small">Contraseña</label>
+                    <input type="password" id="loginPass" class="form-control rounded-0 border-dark" placeholder="••••••••" required>
+                  </div>
+                  <button type="submit" class="btn btn-win-primary w-100 fw-bold"><i class="bi bi-unlock-fill"></i> Iniciar Sesión</button>
+                </form>
+              </div>
+
+              <div class="tab-pane fade" id="content-register" role="tabpanel">
+                <h4 class="fw-bold mb-3" style="color: var(--color-azul-tinta);"><i class="bi bi-person-plus-fill"></i> Crear Nueva Cuenta</h4>
+                <p class="small text-muted mb-4">Únete a la red de lectores de W.I.N y guarda tu cuenta en nuestra base de datos activa.</p>
+
+                <form id="userForm" onsubmit="handleRegister(event)">
+                  <div class="mb-3">
+                    <label class="form-label fw-bold small">Nombre Completo</label>
+                    <input type="text" id="regName" class="form-control rounded-0 border-dark" required placeholder="Ej. Carlos Mendoza">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label fw-bold small">Correo Electrónico</label>
+                    <input type="email" id="regEmail" class="form-control rounded-0 border-dark" required placeholder="correo@ejemplo.com">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label fw-bold small">Contraseña</label>
+                    <input type="password" id="regPass" class="form-control rounded-0 border-dark" required placeholder="Crea tu contraseña">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label fw-bold small">Sección Preferida</label>
+                    <select id="regInterest" class="form-select rounded-0 border-dark" required>
+                      <option value="Deportes">Deportes (En Cancha)</option>
+                      <option value="Economía">Economía (Plata y Números)</option>
+                      <option value="Cultura">Cultura (Raíces)</option>
+                      <option value="Entretenimiento">Entretenimiento (Pantalla y Play)</option>
+                      <option value="Salud">Salud (Bienestar Real)</option>
+                    </select>
+                  </div>
+                  <button type="submit" class="btn btn-win-primary w-100 fw-bold"><i class="bi bi-check-circle-fill"></i> Registrar e Iniciar Sesión</button>
+                </form>
+              </div>
+            </div>
+
+            <div id="activeSessionPanel" class="d-none mt-3 p-3 border border-dark bg-light text-center">
+              <span class="badge bg-success mb-2"><i class="bi bi-check-circle"></i> Sesión Activa</span>
+              <h5 class="fw-bold m-0" id="sessionUserName">Usuario</h5>
+              <p class="small text-muted mb-2" id="sessionUserEmail">correo@ejemplo.com</p>
+              <button class="btn btn-outline-danger btn-sm rounded-0 fw-bold mt-2" onclick="handleLogout()"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="p-4 bg-white border border-dark shadow-sm">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h4 class="fw-bold m-0" style="color: var(--color-azul-tinta);"><i class="bi bi-database"></i> Usuarios Registrados</h4>
+              <span class="badge bg-success"><i class="bi bi-shield-lock"></i> BD Protegida</span>
+            </div>
+            <p class="small text-muted">Directorio de lectores almacenados activamente en el sistema:</p>
+
+            <div class="table-responsive">
+              <table class="table table-win table-hover align-middle">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Preferencia</th>
+                  </tr>
+                </thead>
+                <tbody id="usersTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="view-about" class="screen-view">
+    <div class="container my-5">
+      <button class="btn btn-outline-dark btn-sm mb-4 fw-bold" onclick="navigateTo('view-home')">
+        <i class="bi bi-arrow-left"></i> Regresar al Inicio
+      </button>
+
+      <div class="bg-white p-5 border border-dark shadow-sm">
+        <h2 class="display-5 fw-bold mb-4 text-center" style="color: var(--color-azul-tinta);">Línea Editorial e Identidad</h2>
+        
+        <div class="p-4 border border-dark mb-4" style="background-color: var(--color-marfil);">
+          <h3 class="fw-bold mb-3" style="color: var(--color-azul-tinta);"><i class="bi bi-info-circle-fill"></i> ¿Quiénes somos?</h3>
+          <p class="lh-lg mb-0">
+            <strong>W.I.N (World Information Network)</strong> es un periódico digital especializado comprometido con ofrecer información veraz, rigurosa y contextualizada en economía, deportes, cultura, entretenimiento y salud. Nacemos con la convicción de conectar a nuestros lectores con acontecimientos locales e internacionales desde una perspectiva ética, independiente y libre de sensacionalismo.
+          </p>
+        </div>
+
+        <div class="row g-4 my-3">
+          <div class="col-md-6">
+            <div class="p-4 border border-dark h-100" style="background-color: var(--color-marfil);">
+              <h4 class="fw-bold" style="color: var(--color-azul-tinta);">Misión</h4>
+              <p>Informar con objetividad, veracidad y responsabilidad sobre los acontecimientos más relevantes en economía, deportes, cultura, entretenimiento y salud, ofreciendo contenido verificado y útil.</p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-4 border border-dark h-100" style="background-color: var(--color-marfil);">
+              <h4 class="fw-bold" style="color: var(--color-azul-tinta);">Visión</h4>
+              <p>Ser el periódico digital de referencia por su credibilidad y excelencia periodística en El Salvador, conectando a la sociedad con una experiencia moderna, accesible y confiable.</p>
+            </div>
+          </div>
+        </div>
+
+        <h4 class="fw-bold mt-4 mb-3" style="color: var(--color-azul-tinta);">Integrantes del Equipo Periodístico</h4>
+        <ul class="list-group list-group-flush border border-dark">
+          <li class="list-group-item"><strong>Daniel Ernesto Pérez Torres</strong> (PT250916)</li>
+          <li class="list-group-item"><strong>Alejandra Abigail Díaz Molina</strong> (DM251875)</li>
+          <li class="list-group-item"><strong>Cristian Daniel Portillo Rivera</strong> (PR231615)</li>
+          <li class="list-group-item"><strong>Karina Elizabeth Vela Pineda</strong> (VP202421)</li>
+          <li class="list-group-item"><strong>José Raúl Landaverde Argueta</strong> (LA232970)</li>
+          <li class="list-group-item"><strong>Cristian Edenilson Batres Santamaria</strong> (BS251953)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="authGifModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered text-center">
+      <div class="modal-content border border-dark rounded-0 p-4" style="background-color: var(--color-marfil);">
+        <h3 class="fw-bold mb-2" id="gifModalTitle" style="color: var(--color-azul-tinta);">¡Bienvenido a W.I.N!</h3>
+        <p class="small text-muted mb-3" id="gifModalSub">Cargando tu sesión...</p>
+        
+        <div class="my-3">
+          <img src="https://media1.tenor.com/m/LedML6uF2-4AAAAC/cat-scuba-scuba.gif" alt="Bienvenido GIF" class="img-fluid border border-dark shadow-sm" style="max-height: 220px; object-fit: cover;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="py-4 text-center">
+    <div class="container">
+      <p class="mb-1 fw-bold">W.I.N — World Information Network</p>
+      <p class="small text-white-50 mb-0">Donde la tradición, informa al presente | Universidad Don Bosco 2026</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    const canvas = document.getElementById('lavaCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class LavaBlob {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = canvas.height + Math.random() * 200;
+        this.radius = Math.random() * 85 + 50;
+        this.speed = Math.random() * 0.9 + 0.4;
+        this.pulse = Math.random() * 0.05;
+      }
+      update() {
+        this.y -= this.speed;
+        this.x += Math.sin(this.y * 0.008) * 0.8;
+        if (this.y < -this.radius * 2) {
+          this.reset();
+        }
+      }
+      draw() {
+        ctx.beginPath();
+        let grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
+        grad.addColorStop(0, 'rgba(255, 192, 203, 0.95)');
+        grad.addColorStop(0.6, 'rgba(255, 182, 193, 0.55)');
+        grad.addColorStop(1, 'rgba(255, 192, 203, 0)');
+        ctx.fillStyle = grad;
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    const blobs = Array.from({ length: 18 }, () => new LavaBlob());
+
+    function animateLava() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      blobs.forEach(blob => {
+        blob.update();
+        blob.draw();
+      });
+      requestAnimationFrame(animateLava);
+    }
+    animateLava();
+
+    /* ========================================================
+       BASE DE DATOS COMPLETA CON TODAS LAS SUBSECCIONES LLENAS
+       ======================================================== */
+    const articlesData = [
+      // DEPORTES (En Cancha)
+      {
+        id: 1,
+        category: "Deportes",
+        subCategory: "Balón en Juego",
+        title: "Brasil vence a Japón y avanza a los octavos de final del Mundial 2026",
+        author: "Alejandra Abigail Díaz Molina",
+        date: "Lunes 29 de junio de 2026",
+        location: "Houston, Texas, 29 de junio de 2026",
+        source: "FOX Sports (FOX 26), reporte oficial del partido del 29 de junio de 2026.",
+        mainImg: "https://media-cldnry.s-nbcnews.com/image/upload/c_fill,g_auto,w_2500,h_1726/rockcms/2026-06/260629-brazil-japan-world-cup-ew-312p-e1c4d8.jpg",
+        summary: "La selección de Brasil venció 2-1 a Japón este lunes 29 de junio en el NRG Stadium de Houston, Estados Unidos, en un partido correspondiente a los dieciseisavos de final de la Copa Mundial de la FIFA 2026.",
+        paragraphs: [
+          "La selección de Brasil venció 2-1 a Japón este lunes 29 de junio en el NRG Stadium de Houston, Estados Unidos, en un partido correspondiente a los dieciseisavos de final de la Copa Mundial de la FIFA 2026. Con este resultado, el equipo brasileño aseguró su clasificación a la ronda de octavos de final, mientras que el conjunto nipón concluyó su participación en el certamen ecuménico.",
+          "Durante el primer tiempo, Japón tomó la ventaja al minuto 29 con una anotación de Kaishu Sano tras aprovechar un desajuste defensivo. Tras el gol, el cuadro asiático ordenó sus líneas e impuso un bloque defensivo sólido para mantener la diferencia hasta el descanso, resistiendo los constantes embates de Brasil, que no logró concretar sus opciones en la primera mitad.",
+          "(imagen)",
+          "En la parte complementaria, el combinado sudamericano incrementó la intensidad ofensiva y encontró la igualdad al minuto 56, cuando Casemiro conectó de cabeza un centro preciso enviado por Gabriel Magalhães. A partir de la anotación, Brasil asumió el control de la posesión y generó volumen de juego, mientras Japón buscó proteger la paridad para forzar la prórroga.",
+          "Con el marcador empatado, ambos estrategas realizaron modificaciones tácticas para refrescar el desgaste físico. Brasil volcó su ataque por los costados, mientras que Japón intentó hacer daño mediante transiciones rápidas. El tramo final del compromiso se tornó dinámico y con oportunidades claras en ambas porterías.",
+          "(imagen)",
+          "Cuando el partido agonizaba en el tiempo de reposición, Gabriel Martinelli definió el 2-1 definitivo al minuto 90+5 tras una asistencia de Bruno Guimarães. La anotación selló la victoria brasileña de manera agónica, garantizando su permanencia en la máxima cita del fútbol mundial."
+        ],
+        inlineImages: [
+          "https://a.espncdn.com/photo/2026/0629/r1681551_1296x729_16-9.jpg",
+          "https://cdn.conmebol.com/wp-content/uploads/2026/06/2283896102.jpg-1-1024x646.jpeg"
+        ]
+      },
+      {
+        id: 2,
+        category: "Deportes",
+        subCategory: "Bajo el Aro",
+        title: "New York Knicks rompe sequía histórica y se corona campeón de la NBA 2026",
+        author: "Cristian Daniel Portillo Rivera",
+        date: "Lunes 15 de junio de 2026",
+        location: "Nueva York, Estados Unidos, 15 de junio de 2026",
+        source: "NBA Official & La Nación Deportes, junio de 2026.",
+        mainImg: "https://st1.uvnimg.com/23/31/243949864310a6dbeea61823a91e/ap26165151554560.jpg",
+        summary: "Los New York Knicks conquistaron el título de la NBA al derrotar 4-1 a los San Antonio Spurs en las Finales 2026, volviendo a alzar el trofeo tras décadas de espera.",
+        paragraphs: [
+          "En una noche memorable para el baloncesto mundial, los New York Knicks se consagraron campeones de la temporada 2025-2026 de la NBA al vencer 4-1 en la serie final a los San Antonio Spurs.",
+          "Liderados por un juego colectivo impecable en el Madison Square Garden, la franquicia neoyorquina logró cerrar la serie con solvencia, desatando la euforia de miles de aficionados.",
+          "(imagen)",
+          "Con esta victoria, los Knicks rompen una sequía de más de cinco décadas sin conseguir el trofeo Larry O'Brien, consolidando una de las actuaciones colectivas más destacadas de la década en el baloncesto profesional."
+        ],
+        inlineImages: [
+          "https://www.bostonherald.com/wp-content/uploads/2026/06/FINALES-KNICKS_CAMPEONES_33374.jpg?w=1400"
+        ]
+      },
+      {
+        id: 3,
+        category: "Deportes",
+        subCategory: "A Fondo",
+        title: "Lando Norris logra su primer Campeonato Mundial de Fórmula 1",
+        author: "Daniel Ernesto Pérez Torres",
+        date: "Lunes 8 de diciembre de 2025",
+        location: "Abu Dhabi, Emiratos Árabes Unidos, 8 de diciembre de 2025",
+        source: "Motorsport.com, diciembre de 2025.",
+        mainImg: "https://www.lanacion.com.ar/resizer/v2/toda-la-emocion-de-lando-norris-en-el-podio-ya-es-73JOGWVGGJEKJKYI65DIXHVCBY.JPG?auth=46f7c65ca9614de0156c7263578e56ee80925fd3ab62f3648e78e901f9008f2c&width=1200&height=800&quality=70&smart=true",
+        summary: "El piloto británico Lando Norris, al volante de McLaren, se proclamó campeón del mundo de Fórmula 1 tras una temporada brillante culminada en Abu Dhabi.",
+        paragraphs: [
+          "El Gran Premio de Abu Dhabi selló una de las temporadas más disputadas en la historia de la Fórmula 1, consagrando a Lando Norris como el nuevo campeón mundial del automovilismo.",
+          "Norris, representando a la escudería McLaren, se convirtió en el piloto número 35 en coronarse dentro de la categoría reina tras administrar estratégicamente los puntos de la última válida.",
+          "(imagen)",
+          "El triunfo consolida el resurgimiento técnico de McLaren en el campeonato de constructores y marca el inicio de una nueva era en el deporte a motor internacional."
+        ],
+        inlineImages: [
+          "https://www.infobae.com/resizer/v2/VOH54QPYWFE2VNVJJEYFQHK2QI.JPG?auth=39017927c7023177fddaaad633c7e788d63fde3c9c1380d55a441b656c782bde"
+        ]
+      },
+      {
+        id: 4,
+        category: "Deportes",
+        subCategory: "Cinco Aros",
+        title: "El Salvador afina detalles para la delegación nacional en Santo Domingo 2026",
+        author: "Karina Elizabeth Vela Pineda",
+        date: "Jueves 20 de agosto de 2026",
+        location: "San Salvador, 20 de agosto de 2026",
+        source: "Comité Olímpico de El Salvador (COES) y declaraciones de Armando Bruni.",
+        mainImg: "https://cdn-pro.elsalvador.com/wp-content/uploads/2026/07/juegos-centroamericanos-coes.jpg",
+        summary: "El Comité Olímpico de El Salvador confirmó el plan de apoyo integral para los atletas que representarán al país en los XXV Juegos Centroamericanos y del Caribe Santo Domingo 2026.",
+        paragraphs: [
+          "El deporte olímpico salvadoreño continúa con ritmo firme su ruta de preparación técnica y multidisciplinaria hacia los XXV Juegos Centroamericanos y del Caribe Santo Domingo 2026.",
+          "Autoridades del Comité Olímpico destacaron la coordinación logística, médica y psicológica orientada a potenciar el rendimiento de los deportistas de alto nivel en las diferentes disciplinas.",
+          "(imagen)",
+          "Las metas de la delegación se concentran en revalidar medallas en deportes de precisión, combate y disciplinas individuales, consolidando el progreso atlético del país a nivel regional."
+        ],
+        inlineImages: [
+          "https://lanoticiasv.com/wp-content/uploads/2026/07/santodomingo.jpg"
+        ]
+      },
+      {
+        id: 5,
+        category: "Deportes",
+        subCategory: "Modo Gamer",
+        title: "San Salvador albergó la gran final de torneos de eSports regionales",
+        author: "José Raúl Landaverde Argueta",
+        date: "Lunes 27 de octubre de 2025",
+        location: "San Salvador, 27 de octubre de 2025",
+        source: "Visitesports.com & Liga Centroamericana de eSports.",
+        mainImg: "https://cdn-pro.elsalvador.com/wp-content/uploads/2025/09/539796980_1307626754095577_8931690389258325397_n-1-1024x768.jpg",
+        summary: "Cientos de jóvenes compitieron en la capital salvadoreña durante el evento 'Legends 6', reuniendo a los mejores equipos de Valorant y League of Legends.",
+        paragraphs: [
+          "El ecosistema gamer de El Salvador vivió una de sus jornadas más multitudinarias con la celebración del torneo 'Legends 6' en la capital.",
+          "Equipos locales e internacionales se midieron en enfrentamientos de alta intensidad táctica, demostrando el crecimiento profesional de los deportes electrónicos en la región.",
+          "(imagen)",
+          "El evento no solo otorgó premios en efectivo a los campeones, sino que abrió la oportunidad para que jugadores centroamericanos ingresen al circuito competitivo internacional."
+        ],
+        inlineImages: [
+          "https://www.telefonica.com/es/wp-content/uploads/sites/4/2024/02/pexels-photo-9072394.jpeg"
+        ]
+      },
+      {
+        id: 6,
+        category: "Deportes",
+        subCategory: "Cara a Cara",
+        title: "Luisa Maida: 'Así como se entrena el cuerpo, también hay que entrenar la mente'",
+        author: "Alejandra Abigail Díaz Molina",
+        date: "Domingo 6 de septiembre de 2026",
+        location: "San Salvador, 6 de septiembre de 2026",
+        source: "ElSalvador.com, entrevista realizada por Roberto J. Leiva.",
+        mainImg: "https://cdn-pro.elsalvador.com/wp-content/uploads/2026/09/luisa-maida-entrevista-psicologia-deportiva-experiencia-santo-domingo-2026-atletas-el-salvador-team-esa-robbie-ruud-02.jpg",
+        summary: "La reconocida psicóloga deportiva y exatleta olímpica Luisa Maida comparte en exclusiva los aspectos clave para fortalecer la mentalidad de los deportistas de alto rendimiento.",
+        paragraphs: [
+          "En una entrevista profunda, la psicóloga deportiva Luisa Maida destacó la trascendencia del acompañamiento psicológico dentro de las competencias de alto rendimiento.",
+          "Maida explicó cómo la ansiedad y la presión competitiva pueden modular el desempeño físico si no se aplican herramientas de enfoque consciente y resiliencia emocional.",
+          "(imagen)",
+          "\"Una competencia es un reto, no una amenaza. En lugar de pensar 'ahí viene', hay que pensar 'aquí vengo'\", expresó la especialista al referirse al trabajo directo con los atletas."
+        ],
+        inlineImages: [
+          "https://cdn-pro.elsalvador.com/wp-content/uploads/2026/09/luisa-maida-entrevista-psicologia-deportiva-experiencia-santo-domingo-2026-atletas-el-salvador-team-esa-robbie-ruud-01.jpg"
+        ]
+      },
+      {
+        id: 7,
+        category: "Deportes",
+        subCategory: "Números del Juego",
+        title: "Árbitro salvadoreño Iván Barton comparte sus métricas e hitos profesionales en FESA",
+        author: "Cristian Daniel Portillo Rivera",
+        date: "Miércoles 23 de septiembre de 2026",
+        location: "Santa Ana, 23 de septiembre de 2026",
+        source: "ElSalvador.com y Fundación Educando a un Salvadoreño (FESA).",
+        mainImg: "https://assets.laprensagrafica.com/__export/1781614551548/sites/prensagrafica/img/2026/06/16/barton.jpg_673822677.jpg",
+        summary: "El réferi internacional Iván Barton repasó sus estadísticas de rendimiento arbitral y las decisiones estratégicas que lo llevaron desde Santa Ana hasta semifinales mundialistas.",
+        paragraphs: [
+          "El colegiado salvadoreño Iván Barton sostuvo una conferencia magistral ante jóvenes becarios de FESA, analizando los datos, registros físicos y preparación táctica que exige el arbitraje de elite.",
+          "Barton expuso las métricas de recorrido y toma de decisiones en cancha bajo presión, subrayando los parámetros técnicos que evalúa la FIFA durante torneos internacionales.",
+          "(imagen)",
+          "Asimismo, confirmó sus próximos objetivos profesionales rumbo a los nuevos compromisos continentales de selecciones y clubes de la Concacaf."
+        ],
+        inlineImages: [
+          "https://diarioelsalvador.media/2026/09/Ivan-Barton.jpg"
+        ]
+      },
+
+      // ECONOMÍA (Plata y Números)
+      {
+        id: 8,
+        category: "Economía",
+        subCategory: "Casa Adentro",
+        title: "Remesas hacia El Salvador mantendrían crecimiento, pero a menor ritmo",
+        author: "Karina Elizabeth Vela Pineda",
+        date: "Martes 22 de septiembre de 2026",
+        location: "San Salvador, 22 de septiembre de 2026",
+        source: "ElSalvador.com, información publicada el 22 de septiembre de 2026.",
+        mainImg: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=800&q=80",
+        summary: "Las remesas familiares hacia El Salvador continuarían creciendo durante 2026, aunque a un ritmo menor que el registrado durante el año anterior.",
+        paragraphs: [
+          "Las remesas familiares hacia El Salvador continuarían creciendo durante 2026, aunque a un ritmo menor que el registrado durante el año anterior, según un análisis citado por ElSalvador.com.",
+          "La proyección estima que el país podría recibir alrededor de $10,458 millones en remesas durante 2026, lo que representaría un crecimiento de 4.8 % frente a 2025.",
+          "(imagen)",
+          "El comportamiento estaría relacionado con factores como una menor migración, el incremento de las deportaciones desde Estados Unidos y un crecimiento más limitado de los ingresos de los migrantes."
+        ],
+        inlineImages: [
+          "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=800&q=80"
+        ]
+      },
+      {
+        id: 9,
+        category: "Economía",
+        subCategory: "Fuera de Fronteras",
+        title: "Bancos centrales ajustan tasas de interés globales ante moderación de la inflación",
+        author: "Daniel Ernesto Pérez Torres",
+        date: "Jueves 18 de septiembre de 2026",
+        location: "Washington D.C., Estados Unidos, 18 de septiembre de 2026",
+        source: "Reserva Federal de EE. UU. & Banco Central Europeo.",
+        mainImg: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=800&q=80",
+        summary: "Las principales instituciones financieras internacionales anunciaron nuevos recortes en las tasas de interés de referencia para estimular los mercados internacionales.",
+        paragraphs: [
+          "Los mercados financieros internacionales reaccionaron positivamente a los anuncios de flexibilización monetaria por parte de los principales bancos centrales.",
+          "La contención progresiva de la inflación global ha permitido reducir el costo del crédito internacional, incentivando la inversión en mercados emergentes.",
+          "(imagen)",
+          "Analistas prevén que esta dinámica favorezca el costo del financiamiento para proyectos de infraestructura en la región latinoamericana durante el último trimestre del año."
+        ],
+        inlineImages: [
+          "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=800&q=80"
+        ]
+      },
+      {
+        id: 10,
+        category: "Economía",
+        subCategory: "De Cero a Marca",
+        title: "Nuevos emprendimientos tecnológicos impulsan el ecosistema startup salvadoreño",
+        author: "Cristian Daniel Portillo Rivera",
+        date: "Lunes 21 de septiembre de 2026",
+        location: "San Salvador, 21 de septiembre de 2026",
+        source: "Ministerio de Economía y Red de Emprendedores de El Salvador.",
+        mainImg: "https://static.accupass.com/eventbanner/2604140341281127001360.jpg",
+        summary: "Más de cincuenta nuevas empresas emergentes en sectores fintech y comercio electrónico han logrado consolidar rondas de inversión inicial durante el año.",
+        paragraphs: [
+          "El ecosistema de emprendimiento en El Salvador registra un auge significativo impulsado por jóvenes desarrolladores y creativos que apuestan por la tecnología para resolver necesidades cotidianas.",
+          "De acuerdo con reportes del sector, las startups locales han logrado posicionar marcas competitivas no solo en el ámbito nacional, sino también en mercados de la región centroamericana.",
+          "(imagen)",
+          "Proyectos enfocados en la digitalización de pagos, logística automatizada e inteligencia artificial aplicada al comercio minorista encabezan las iniciativas con mayor tracción e interés entre inversionistas."
+        ],
+        inlineImages: [
+          "https://centroamericaeconomia.net/wp-content/uploads/2026/08/WhatsApp-Image-2026-07-30-at-4.36.23-PM-1-copia.png"
+        ]
+      },
+      {
+        id: 11,
+        category: "Economía",
+        subCategory: "Jugadas de Negocio",
+        title: "Aumenta $0.17 el precio de los combustibles en El Salvador",
+        author: "José Raúl Landaverde Argueta",
+        date: "Martes 15 de septiembre de 2026",
+        location: "El Salvador, 15 de septiembre de 2026",
+        source: "Dirección General de Energía, Hidrocarburos y Minas (DGEHM).",
+        mainImg: "https://images.unsplash.com/photo-1527018601619-a508a2be00cd?auto=format&fit=crop&w=800&q=80",
+        summary: "Los precios de referencia de los combustibles aumentaron nuevamente en El Salvador a partir del 15 de septiembre de 2026.",
+        paragraphs: [
+          "Los precios de referencia de los combustibles aumentaron nuevamente en El Salvador a partir del 15 de septiembre de 2026, según la Dirección General de Energía, Hidrocarburos y Minas (DGEHM). El incremento es de $0.17 por galón para la gasolina superior, regular y el diésel.",
+          "(imagen)",
+          "En la zona central, la gasolina superior pasó a $5.13, la regular a $4.80 y el diésel a $4.86 por galón, debido a variaciones en el mercado de hidrocarburos global."
+        ],
+        inlineImages: [
+          "https://cdn-pro.elsalvador.com/wp-content/uploads/2026/09/combustibles-precios-1024x768.jpg"
+        ]
+      },
+      {
+        id: 12,
+        category: "Economía",
+        subCategory: "Sembrando Capital",
+        title: "Fondo Verde aprueba financiamiento para proyectos agroforestales sostenibles",
+        author: "Alejandra Abigail Díaz Molina",
+        date: "Viernes 11 de septiembre de 2026",
+        location: "San Salvador, 11 de septiembre de 2026",
+        source: "Ministerio de Agricultura y Ganadería & Fondo de Inversión Ambiental.",
+        mainImg: "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=800&q=80",
+        summary: "Nuevos fondos de cooperación internacional impulsarán la restauración de suelos y el cultivo sostenible de café y cacao en la cordillera Apaneca-Ilamatepec.",
+        paragraphs: [
+          "Un programa multinacional destinó recursos de inversión directa para pequeños productores agrícolas con el objetivo de fortalecer la resiliencia ambiental y el cultivo bajo sombra.",
+          "La iniciativa busca sembrar capital renovable en cooperativas agrícolas locales, conectando sus productos con mercados internacionales con certificación orgánica.",
+          "(imagen)",
+          "Beneficiarios recibirán asistencia técnica avanzada y tecnología de riego por goteo para optimizar el rendimiento por manzana cultivada."
+        ],
+        inlineImages: [
+          "https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=800&q=80"
+        ]
+      },
+      {
+        id: 13,
+        category: "Economía",
+        subCategory: "El Tablero",
+        title: "Economía salvadoreña crece 4.8 % durante el primer trimestre de 2026",
+        author: "Cristian Daniel Portillo Rivera",
+        date: "Miércoles 23 de septiembre de 2026",
+        location: "San Salvador, 23 de septiembre de 2026",
+        source: "ElSalvador.com, con datos del Banco Central de Reserva.",
+        mainImg: "https://diarioelsalvador.media/2026/06/WhatsApp-Image-2026-05-21-at-4.10.53-PM.jpeg",
+        summary: "La economía salvadoreña registró un crecimiento del 4.8 % durante el primer trimestre de 2026, de acuerdo con los datos divulgados por el Banco Central de Reserva (BCR).",
+        paragraphs: [
+          "La economía salvadoreña registró un crecimiento del 4.8 % durante el primer trimestre de 2026, de acuerdo con los datos divulgados por el Banco Central de Reserva (BCR).",
+          "El Producto Interno Bruto alcanzó los $9,261.8 millones durante los primeros tres meses del año. Entre las actividades que más contribuyeron se encuentra la construcción.",
+          "(imagen)",
+          "El comportamiento dinámico se mantuvo también en actividades de transporte, turismo y servicios corporativos."
+        ],
+        inlineImages: [
+          "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=800&q=80"
+        ]
+      },
+      {
+        id: 14,
+        category: "Economía",
+        subCategory: "Chamba Hoy",
+        title: "Reconstrucción de mercados de Santa Ana y San Miguel contempla más de 3,700 locales",
+        author: "Daniel Ernesto Pérez Torres",
+        date: "Miércoles 23 de septiembre de 2026",
+        location: "San Salvador, 23 de septiembre de 2026",
+        source: "ElSalvador.com, información publicada el 23 de septiembre de 2026.",
+        mainImg: "https://cdn-pro.elsalvador.com/wp-content/uploads/2025/10/noticias-construccion-mercados-santa-ana-san-miguel.jpg",
+        summary: "La Asamblea Legislativa aprobó una modificación al presupuesto que incorpora $11.2 millones al Ministerio de Obras Públicas para avanzar en la reconstrucción de los mercados.",
+        paragraphs: [
+          "La Asamblea Legislativa aprobó una modificación al presupuesto que incorpora $11.2 millones al Ministerio de Obras Públicas para avanzar en la reconstrucción de los mercados municipales de Santa Ana y San Miguel.",
+          "El proyecto generará cientos de puestos de empleo directo e indirecto durante la fase constructiva y comercial.",
+          "(imagen)",
+          "En conjunto, ambos proyectos contemplan cerca de 3,754 locales comerciales, además de áreas administrativas y accesos inclusivos."
+        ],
+        inlineImages: [
+          "https://cdn-pro.elsalvador.com/wp-content/uploads/2026/02/dinero-y-negocios-mercados-santa-ana-san-miguel_4-1024x768.jpg"
+        ]
+      },
+
+      // CULTURA (Raíces)
+      {
+        id: 15,
+        category: "Cultura",
+        subCategory: "Trazo Libre",
+        title: "Exposición artística destaca el lenguaje visual y la formación de nuevas generaciones",
+        author: "Karina Elizabeth Vela Pineda",
+        date: "Viernes 18 de septiembre de 2026",
+        location: "El Salvador, 18 de septiembre de 2026",
+        source: "Información proporcionada sobre la exposición artística del maestro Arrieta.",
+        mainImg: "https://www.euskonews.eus/0454zbk/argazkiak/kosmo45401_03.jpg",
+        summary: "El reconocido pintor, dibujante y profesor de artes plásticas, maestro Arrieta, presentó una selección de obras realizadas a lo largo de su trayectoria artística.",
+        paragraphs: [
+          "En el marco de un encuentro cultural enfocado en acercar el arte a la ciudadanía, el maestro Arrieta presentó una selección de obras en técnica mixta.",
+          "La exposición reúne principalmente pinturas, acompañadas de bocetos y dibujos que permiten conocer el proceso creativo detrás de cada trazo.",
+          "(imagen)",
+          "La muestra posee un marcado carácter pedagógico dirigido a estudiantes y apasionados por el dibujo plástico."
+        ],
+        inlineImages: [
+          "https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=800&q=80"
+        ]
+      },
+      {
+        id: 16,
+        category: "Cultura",
+        subCategory: "Entre Líneas",
+        title: "Feria Nacional del Libro reúne a autores independientes y editoriales centroamericanas",
+        author: "José Raúl Landaverde Argueta",
+        date: "Sábado 12 de septiembre de 2026",
+        location: "San Salvador, 12 de septiembre de 2026",
+        source: "Ministerio de Cultura de El Salvador & Cámara Salvadoreña del Libro.",
+        mainImg: "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=800&q=80",
+        summary: "El Palacio Nacional de la Cultura acogió recitales de poesía, presentaciones de novelas contemporáneas y talleres de escritura creativa.",
+        paragraphs: [
+          "Escritores, poetas y lectores se congregaron en la Feria Nacional del Libro para dialogar sobre las tendencias narrativas de la región.",
+          "El programa incluyó conversatorios dedicados a la literatura infantil, el rescate de leyendas populares y la digitalización de archivos literarios históricos.",
+          "(imagen)",
+          "Visitantes disfrutaron de ponencias gratuitas y de firmas de autógrafos con figuras destacadas de la narrativa centroamericana."
+        ],
+        inlineImages: [
+          "https://www.prensalibre.com/wp-content/uploads/2026/04/Feria-del-Libro-en-Guatemala-reune-editoriales-y-promueve-lectura-en-el-Centro-Historico-este-domingo-1.jpeg"
+        ]
+      },
+      {
+        id: 17,
+        category: "Cultura",
+        subCategory: "Memoria Viva",
+        title: "Investigación científica analiza formación rocosa relacionada con la historia del Arca de Noé",
+        author: "Karina Elizabeth Vela Pineda",
+        date: "Miércoles 23 de septiembre de 2026",
+        location: "San Salvador, 23 de septiembre de 2026",
+        source: "ElSalvador.com, información publicada el 23 de septiembre de 2026.",
+        mainImg: "https://images.ecestaticos.com/RdCOqVgD392jcfzgtKKjUczWJCs=/0x0:0x0/1200x675/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2F430%2F39d%2Fdb7%2F43039ddb7b858fa7658077aba351a772.jpg",
+        summary: "Un equipo internacional de científicos realiza investigaciones en una formación rocosa ubicada en Turquía que durante décadas ha sido relacionada popularmente con la historia del Arca de Noé.",
+        paragraphs: [
+          "Un equipo internacional de científicos realiza investigaciones en una formación rocosa ubicada en Turquía que durante décadas ha sido relacionada popularmente con la historia del Arca de Noé.",
+          "Los investigadores están tomando muestras del subsuelo de la formación Durupınar con el objetivo de analizar su composición geológica.",
+          "(imagen)",
+          "Los resultados de los análisis podrían aportar nueva información sobre uno de los lugares que periódicamente despierta interés entre geólogos e historiadores."
+        ],
+        inlineImages: [
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREHu2IoX2XvU00eTWeIISqzBQ6vBj0tIYMzJPkktHXCcMDq5FlgsZANT42&s=10"
+        ]
+      },
+      {
+        id: 18,
+        category: "Cultura",
+        subCategory: "Sonido Propio",
+        title: "Orquesta Sinfónica de San Salvador prepara concierto gratuito para cerrar el Mes Cívico",
+        author: "Cristian Daniel Portillo Rivera",
+        date: "Miércoles 23 de septiembre de 2026",
+        location: "San Salvador, 23 de septiembre de 2026",
+        source: "ElSalvador.com, información publicada el 23 de septiembre de 2026.",
+        mainImg: "https://cdn-pro.elsalvador.com/wp-content/uploads/2026/05/orquesta-sinfonica-san-salvador-centro.jpg",
+        summary: "La Orquesta Sinfónica de San Salvador ofrecerá una presentación musical el próximo sábado 26 de septiembre como parte de las actividades del Mes Cívico.",
+        paragraphs: [
+          "La Orquesta Sinfónica de San Salvador ofrecerá una presentación musical el próximo sábado 26 de septiembre como parte de las actividades programadas para el cierre del Mes Cívico.",
+          "El concierto se realizará de 6:00 de la tarde a 9:00 de la noche sobre la 7.ª avenida Sur, frente al Mercado Central.",
+          "(imagen)",
+          "La actividad ha sido anunciada como un espacio abierto para acercar piezas populares e internacionales a las familias salvadoreñas."
+        ],
+        inlineImages: [
+          "https://cdn-pro.elsalvador.com/wp-content/uploads/2026/05/orquesta-sinfonica-san-salvador-centro-1-1024x768.jpg"
+        ]
+      },
+      {
+        id: 19,
+        category: "Cultura",
+        subCategory: "A la Mesa",
+        title: "Pueblos vivos celebran feria gastronómica rescatando la cocina ancestral",
+        author: "Alejandra Abigail Díaz Molina",
+        date: "Jueves 17 de septiembre de 2026",
+        location: "Sonsonate, 17 de septiembre de 2026",
+        source: "Red de Cultura Gastronómica de El Salvador y Ministerio de Turismo.",
+        mainImg: "https://scontent.fsal11-1.fna.fbcdn.net/v/t39.99422-6/727519292_1328582795460701_9018018992109558505_n.png?stp=dst-jpg_tt6&cstp=mx2048x1536&ctp=s2048x1536&_nc_cat=111&ccb=1-7&_nc_sid=127cfc&_nc_ohc=Jpe2S7CqnNQQ7kNvwFtfd6a&_nc_oc=AdpGQTWNu4h7XOmZ1aN6kA_vlGT0u9x0enBbw7UZ9KZVC95cwz61MstL1w8IA2CzOxo&_nc_zt=14&_nc_ht=scontent.fsal11-1.fna&_nc_gid=UfwCR_qRtKqwwJFQLk99iw&_nc_ss=7b289&oh=00_AQIeHAVwO5g_a1eA6EF4_A5M9kG8k0ZM61QiKnejqgvXHQ&oe=6ABA74E9",
+        summary: "Cocineras e historiadores se dieron cita para elaborar platillos típicos basados en maíz, hierbas autóctonas y métodos tradicionales de cocción en barro.",
+        paragraphs: [
+          "El patrimonio culinario salvadoreño vivió una jornada festiva durante el encuentro gastronómico regional, orientado a preservar los sabores originales transmitidos por generaciones.",
+          "Chefs locales y matronas tradicionales exhibieron platillos elaborados en comales de barro y fuego de leña.",
+          "(imagen)",
+          "La actividad contó con talleres interactivos donde los asistentes aprendieron sobre la molienda en piedra y el origen de nuestras raíces culinarias."
+        ],
+        inlineImages: [
+          "https://scontent.fsal11-1.fna.fbcdn.net/v/t39.99422-6/726016421_3091176987739119_1154055678884499366_n.png?stp=dst-jpg_tt6&cstp=mx2048x1536&ctp=s2048x1536&_nc_cat=108&ccb=1-7&_nc_sid=127cfc&_nc_ohc=WOCfPgYpDwcQ7kNvwGy-Hoa&_nc_oc=AdqYiYKsHjyDKliCtEJLcy_tg8xBtp0WNVEi6N8wNrpyFLZWgOLR5sxIbRXzmTnUjgE&_nc_zt=14&_nc_ht=scontent.fsal11-1.fna&_nc_gid=X3OAteTZFmwT8yt5xnhWsQ&_nc_ss=7b289&oh=00_AQJyk9qQiyZ7cr89XjJt_LGH3jyPy5QjyCQvPCvlLbOCDg&oe=6ABA79A1"
+        ]
+      },
+      {
+        id: 20,
+        category: "Cultura",
+        subCategory: "En Vitrina",
+        title: "Festival Ícaro continúa con una jornada dedicada al cine salvadoreño",
+        author: "Daniel Ernesto Pérez Torres",
+        date: "Miércoles 23 de septiembre de 2026",
+        location: "San Salvador, 23 de septiembre de 2026",
+        source: "ElSalvador.com, con información del Centro Cultural de España en El Salvador.",
+        mainImg: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZ0tp6wNdCFNUeAe-PqZfxqqf85n-XgTuoi-inNCjnnalT24CH0Wj-DKQ&s=10",
+        summary: "El Centro Cultural de España en El Salvador continúa con la programación del Festival Ícaro 2026, un ciclo cinematográfico dedicado al cine nacional.",
+        paragraphs: [
+          "El Centro Cultural de España en El Salvador continúa durante septiembre con la programación del Festival Ícaro 2026, un ciclo cinematográfico que reúne producciones audiovisuales salvadoreñas.",
+          "La programación contempla jornadas gratuitas con cortometrajes de ficción, animación y experimentación.",
+          "(imagen)",
+          "Las producciones proyectadas representan distintas propuestas estilísticas y narrativas del audiovisual salvadoreño reciente."
+        ],
+        inlineImages: [
+          "https://assets.laprensagrafica.com/__export/1788222970698/sites/prensagrafica/img/2026/08/31/xcaro_2.jpeg_20896918.jpeg"
+        ]
+      },
+      {
+        id: 21,
+        category: "Cultura",
+        subCategory: "De Generación en Generación",
+        title: "Semana Santa en Chalatenango mantiene vivas las tradiciones religiosas y culturales",
+        author: "José Raúl Landaverde Argueta",
+        date: "Sábado 19 de septiembre de 2026",
+        location: "Chalatenango, 19 de septiembre de 2026",
+        source: "Información proporcionada sobre las tradiciones de Semana Santa en Chalatenango.",
+        mainImg: "https://scontent.fsal2-2.fna.fbcdn.net/v/t39.30808-6/660609836_1607083501423178_576055218210826593_n.jpg?stp=dst-jpg_tt6&cstp=mx2048x1153&ctp=s2048x1153&_nc_cat=104&ccb=1-7&_nc_sid=f727a1&_nc_ohc=oMe-xD9ZyCEQ7kNvwHcfTQe&_nc_oc=Adr9IK7QQ5Y5z2Al8xdWau9mcghwNyia0RIjQ4WWhTiGCtsLB7ktMiB6LT0Mihb5fow&_nc_zt=23&_nc_ht=scontent.fsal2-2.fna&_nc_gid=_UaFNOc-S5z81zBRVcGobg&_nc_ss=7b289&oh=00_AQI1cm5PQrc-79klKQKiXPP2bHCcNkHKRKbGw2G-WLMSfg&oe=6ABA83C8",
+        summary: "En Chalatenango, las comunidades participan en actividades como procesiones, Vía Crucis y elaboración de alfombras tradicionales.",
+        paragraphs: [
+          "La Semana Santa representa una de las tradiciones religiosas y culturales más importantes de El Salvador. En Chalatenango, las comunidades participan en costumbres centenarias.",
+          "Uno de los elementos más representativos son las alfombras elaboradas con aserrín, sal y flores por jóvenes y adultos.",
+          "(imagen)",
+          "La transmisión intergeneracional de estas expresiones artísticas asegura la conservación del patrimonio inmaterial en los municipios del norte del país."
+        ],
+        inlineImages: [
+          "https://scontent.fsal2-2.fna.fbcdn.net/v/t39.30808-6/662876124_1607083311423197_6817667871201854675_n.jpg?stp=dst-jpg_tt6&cstp=mx2048x1153&ctp=s2048x1153&_nc_cat=104&ccb=1-7&_nc_sid=f727a1&_nc_ohc=MElibRks65wQ7kNvwHLNr2q&_nc_oc=AdpS2rPdgROf0uYM7hKgkeMZekbC6guJMQY7zL9L1kYUjycDmwqnb1n_KMu_apcdCSM&_nc_zt=23&_nc_ht=scontent.fsal2-2.fna&_nc_gid=-33ZI4a-STEOLZYw__fx1w&_nc_ss=7b289&oh=00_AQLl4FeDwuAlO2na5-4wR4zjUQvCiQpPNXtOQp-sXZBorw&oe=6ABA7F1B"
+        ]
+      },
+
+      // ENTRETENIMIENTO (Pantalla y Play)
+      {
+
+        id: 22,
+        category: "Entretenimiento",
+        subCategory: "Luces, Cámara",
+        title: "Festival de Cine Internacional estrena las producciones más galardonadas del año",
+        author: "Alejandra Abigail Díaz Molina",
+        date: "Martes 15 de septiembre de 2026",
+        location: "San Salvador, 15 de septiembre de 2026",
+        source: "Red de Cineasteas Centroamericanos & Teatro Presidente.",
+        mainImg: "https://imgs.elpais.com.uy/dims4/default/7491361/2147483647/strip/true/crop/3999x2499+0+0/resize/1200x750!/format/webp/quality/90/?url=https%3A%2F%2Fel-pais-uruguay-production-web.s3.us-east-1.amazonaws.com%2Fbrightspot%2Ff9%2Fea%2Fa11ce3b448398d1aed195dd805ea%2Fel-festival-de-veneci-20279028.jpg",
+        summary: "Salas del país proyectan los largometrajes galardonados en festivales internacionales como Cannes y Venecia durante una semana dedicada al séptimo arte.",
+        paragraphs: [
+          "La cartelera cinematográfica local abrió sus puertas a una muestra exclusiva de producciones independientes nominadas a los principales premios globales del cine.",
+          "El público ha podido disfrutar de proyecciones en pantalla grande acompañadas de foros de debate con directores y críticos iberoamericanos.",
+          "(imagen)",
+          "La iniciativa busca diversificar la oferta cultural cinematográfica en las salas de la capital."
+        ],
+        inlineImages: [
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKYtlR_3tTFzKa4kzmCIjIqFv6kQmycKXq_LQkMTfD8f7gLhZ2V7vW0S7_&s=10"
+        ]
+      },
+      {
+        id: 23,
+        category: "Entretenimiento",
+        subCategory: "Play Directo",
+        title: "“Yo Me Llamo All Stars” reúne nuevamente a figuras destacadas de la televisión salvadoreña",
+        author: "José Raúl Landaverde Argueta",
+        date: "Domingo 20 de septiembre de 2026",
+        location: "San Salvador, 20 de septiembre de 2026",
+        source: "Información proporcionada sobre “Yo Me Llamo All Stars”.",
+        mainImg: "https://d21tucfpen3j82.cloudfront.net/wp-content/uploads/2026/07/20100831/Yo-me-llamo-All-Stars-muy-pronto-por-Canal-2.webp",
+        summary: "El programa “Yo Me Llamo All Stars” llegó a la televisión salvadoreña con una edición especial que reúne a los mejores imitadores de temporadas anteriores.",
+        paragraphs: [
+          "El programa “Yo Me Llamo All Stars” llegó a la televisión salvadoreña con una edición especial que reúne a los participantes más recordados.",
+          "La competencia cuenta con imitadores de alto nivel técnico que buscan conquistar el voto del jurado y la preferencia del público.",
+          "(imagen)",
+          "La transmisión dominical se mantiene en los primeros lugares de sintonía en la pantalla chica."
+        ],
+        inlineImages: [
+          "https://d21tucfpen3j82.cloudfront.net/wp-content/uploads/2026/09/03162340/El-escenario-vuelve-a-encenderse-con-Yo-Me-Llamo-All-Stars-696x396.webp"
+        ]
+      },
+      {
+        id: 24,
+        category: "Entretenimiento",
+        subCategory: "En Repeat",
+        title: "Plataformas digitales registran récord de reproducciones para producciones musicales latinas",
+        author: "Cristian Daniel Portillo Rivera",
+        date: "Viernes 18 de septiembre de 2026",
+        location: "San Salvador, 18 de septiembre de 2026",
+        source: "Spotify Charts & Billboard Latin, septiembre de 2026.",
+        mainImg: "https://assets.laprensagrafica.com/__export/1787881547820/sites/prensagrafica/img/2026/08/27/inflo_panacover.jpeg_1902800913.jpeg",
+        summary: "El consumo de música en streaming en El Salvador muestra una fuerte preferencia por fusiones urbanas, pop tropical e indies emergentes.",
+        paragraphs: [
+          "Los reportes trimestrales de las principales aplicaciones de audio reflejan un aumento constante en las listas de reproducción locales dirigidas a creadores iberoamericanos.",
+          "Álbumes recientes han superado los millones de reproducciones diarias en teléfonos móviles, posicionando varias canciones en la lista 'En Repeat' de la audiencia juvenil.",
+          "(imagen)",
+          "Especialistas en la industria destacan la facilidad de distribución digital como catalizador para el éxito de proyectos independientes."
+        ],
+        inlineImages: [
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShPAMT1xUqBR-uarEVrs6fcZ3QWe9FXU1WTQSy1rb1UrINNoYprZ6gNk3t&s=10"
+        ]
+      },
+      {
+        id: 25,
+        category: "Entretenimiento",
+        subCategory: "Bajo los Reflectores",
+        title: "Luis Miguel anuncia nueva gira para 2027 y crece la expectativa entre sus seguidores",
+        author: "Karina Elizabeth Vela Pineda",
+        date: "Martes 22 de septiembre de 2026",
+        location: "San Salvador, 22 de septiembre de 2026",
+        source: "ElSalvador.com, información publicada el 22 de septiembre de 2026.",
+        mainImg: "https://lapagina.com.sv/wp-content/uploads/2026/09/IMG_3048.jpeg",
+        summary: "El cantante mexicano Luis Miguel anunció una nueva gira internacional para 2027, generando expectativa entre sus seguidores salvadoreños.",
+        paragraphs: [
+          "El cantante mexicano Luis Miguel anunció una nueva gira internacional para 2027, generando expectación entre la fanaticada salvadoreña.",
+          "Luis Miguel se presentó por última vez en El Salvador el 30 de enero de 2024, cuando ofreció un concierto masivo en el Estadio Cuscatlán.",
+          "(imagen)",
+          "Seguidores en redes sociales aguardan la revelación oficial de las fechas confirmadas para Centroamérica."
+        ],
+        inlineImages: [
+          "https://i0.wp.com/mayacomunicacion.com.mx/wp-content/uploads/2026/09/LuisMiguelTour2027-09222026.webp?fit=1200%2C751&ssl=1&w=640"
+        ]
+      },
+      {
+        id: 26,
+        category: "Entretenimiento",
+        subCategory: "Nivel Up",
+        title: "Industria global del videojuego presenta avances tecnológicos de nueva generación",
+        author: "Daniel Ernesto Pérez Torres",
+        date: "Sábado 19 de septiembre de 2026",
+        location: "Tokio, Japón, 19 de septiembre de 2026",
+        source: "Tokyo Game Show 2026 Reports.",
+        mainImg: "https://guslok.com/wp-content/uploads/2026/09/tokyo-game-show-2026-cancela-ultima-jornada-tifon.jpg",
+        summary: "Motores gráficos avanzados e integración de renderizado foveal prometen transformar los videojuegos de consola y PC durante el próximo año.",
+        paragraphs: [
+          "Las desarrolladoras líderes del sector interactivo revelaron demostraciones técnicas con hiperfidelidad visual y tiempos de carga prácticamente nulos.",
+          "La feria tecnológica 'Tokyo Game Show 2026' evidenció un salto generacional enfocado en la inmersión de los motores de física y la simulación táctil.",
+          "(imagen)",
+          "Comunidades de jugadores locales destacaron la optimización para consolas portátiles e híbridas."
+        ],
+        inlineImages: [
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvwE8owys2J5ZtcbynxyDT9pfzrGqrcsULcBxbStZpGuhPon1mWmNFSa8_&s=10"
+        ]
+      },
+      {
+        id: 27,
+        category: "Entretenimiento",
+        subCategory: "En Vivo",
+        title: "Pablo Alborán regresará a El Salvador con su Global Tour KM0",
+        author: "Cristian Daniel Portillo Rivera",
+        date: "Miércoles 23 de septiembre de 2026",
+        location: "San Salvador, 23 de septiembre de 2026",
+        source: "ElSalvador.com, información publicada el 23 de septiembre de 2026.",
+        mainImg: "https://cdn-pro.elsalvador.com/wp-content/uploads/2026/09/pablo-alboran-entradas-el-salvador-2.jpg",
+        summary: "El cantante español Pablo Alborán regresará a El Salvador el próximo 29 de septiembre como parte de su gira internacional Global Tour KM0.",
+        paragraphs: [
+          "El cantante español Pablo Alborán regresará a El Salvador el próximo 29 de septiembre como parte de su gira internacional Global Tour KM0.",
+          "El concierto se realizará a las 8:00 de la noche en Salamanca Eventos, en San Salvador.",
+          "(imagen)",
+          "Entre las canciones previstas en su repertorio destacan clásicos románticos y temas de su producción más reciente."
+        ],
+        inlineImages: [
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTO2JEwc-0uHS2n1QczJWWlGKjVkd8nAAb3aCEjuKiWrVISFDQwbWxJppY&s=10"
+        ]
+      },
+      {
+        id: 28,
+        category: "Entretenimiento",
+        subCategory: "Lo Que se Viene",
+        title: "Anuncian estrenos cinematográficos y espectáculos masivos programados para 2027",
+        author: "Alejandra Abigail Díaz Molina",
+        date: "Domingo 20 de septiembre de 2026",
+        location: "Los Ángeles, Estados Unidos, 20 de septiembre de 2026",
+        source: "Hollywood Reporter & Eventos Globales 2027.",
+        mainImg: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS68cATq-5zBb7FWd4RCdyTSSFU89ArvkXDZd7aMTSqzz-V7x_YMCIvS1fN&s=10",
+        summary: "Estudios cinematográficos y productoras de eventos revelaron sus calendarios oficiales para el próximo año, prometiendo secuelas esperadas y giras mundiales.",
+        paragraphs: [
+          "La industria del entretenimiento presentó un adelanto de los espectáculos, festivales y superproducciones que dominarán la agenda durante 2027.",
+          "Productoras locales iniciaron gestiones para incluir recintos salvadoreños en el itinerario centroamericano de destacados artistas internacionales.",
+          "(imagen)",
+          "Aficionados se mantienen atentos a las aperturas de preventas y anuncios de giras por la región."
+        ],
+        inlineImages: [
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYPDXvRhwDjSX6Eo79Ost3YpE-4MQiD96PA-nXdiYtbIMJbhFU9sdmvE6g&s=10"
+        ]
+      },
+
+      // SALUD (Bienestar Real)
+      {
+        id: 29,
+        category: "Salud",
+        subCategory: "Diagnóstico Claro",
+        title: "Especialistas resaltan la importancia de los chequeos preventivos de laboratorio",
+        author: "Karina Elizabeth Vela Pineda",
+        date: "Lunes 14 de septiembre de 2026",
+        location: "San Salvador, 14 de septiembre de 2026",
+        source: "Colegio Médico de El Salvador & Ministerio de Salud.",
+        mainImg: "https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=800&q=80",
+        summary: "Medir periódicamente niveles de glucosa, perfil lipídico y presión arterial permite detectar de forma temprana patologías crónicas no transmisibles.",
+        paragraphs: [
+          "Médicos internistas instaron a la ciudadanía a realizarse análisis sanguíneos periódicos para detectar desbalances metabólicos antes de que aparezcan síntomas clínicos.",
+          "Contar con un diagnóstico claro y oportuno facilita el manejo preventivo mediante cambios en el estilo de vida o tratamientos de baja complejidad.",
+          "(imagen)",
+          "La red pública y laboratorios privados han habilitado jornadas de tamizaje metabólico a precios accesibles."
+        ],
+        inlineImages: [
+          "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=800&q=80"
+        ]
+      },
+      {
+        id: 30,
+        category: "Salud",
+        subCategory: "Buena Vibra",
+        title: "Práctica regular del ejercicio al aire libre fortalece la salud cardiovascular y anímica",
+        author: "José Raúl Landaverde Argueta",
+        date: "Sábado 19 de septiembre de 2026",
+        location: "San Salvador, 19 de septiembre de 2026",
+        source: "Organización Panamericana de la Salud (OPS).",
+        mainImg: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=800&q=80",
+        summary: "Caminar 30 minutos al día en espacios naturales contribuye a regular la presión arterial y estimula la liberación de endorfinas.",
+        paragraphs: [
+          "Expertos en medicina deportiva destacan los múltiples beneficios biológicos que aporta la actividad física moderada realizada de forma constante.",
+          "Ejercitarse al aire libre estimula la síntesis de vitamina D y reduce notablemente la tensión acumulada por el ritmo de trabajo urbano.",
+          "(imagen)",
+          "Parques nacionales y plazas públicas registran una afluencia creciente de personas que adoptan hábitos saludables."
+        ],
+        inlineImages: [
+          "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=800&q=80"
+        ]
+      },
+      {
+        id: 31,
+        category: "Salud",
+        subCategory: "Mente en Paz",
+        title: "Especialistas promueven la salud mental mediante hábitos de descanso e higiene del sueño",
+        author: "Daniel Ernesto Pérez Torres",
+        date: "Jueves 17 de septiembre de 2026",
+        location: "San Salvador, 17 de septiembre de 2026",
+        source: "Asociación Salvadoreña de Psiquiatría & OMS.",
+        mainImg: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=800&q=80",
+        summary: "Mantener rutinas estables de sueño y reducir el uso prolongado de pantallas antes de dormir reduce el estrés y fortalece la resiliencia emocional.",
+        paragraphs: [
+          "Psicólogos clínicos compartieron recomendaciones prácticas para cuidar la salud mental en entornos highly digitalizados.",
+          "Aprender a gestionar los períodos de descanso nocturno resulta fundamental para un rendimiento cognitivo óptimo y para prevenir trastornos de ansiedad.",
+          "(imagen)",
+          "Instituciones académicas continúan impartiendo talleres abiertos sobre mindfulness y regulación del estrés."
+        ],
+        inlineImages: [
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyAhYItEjFLe27eQpkkrjz5qBhRnWOJGosyXgMTE5EjgooDOJjZO6-_94&s=10"
+        ]
+      },
+      {
+        id: 32,
+        category: "Salud",
+        subCategory: "Plato Consciente",
+        title: "Especialistas recomiendan incrementar el consumo de alimentos frescos y de temporada",
+        author: "Alejandra Abigail Díaz Molina",
+        date: "Martes 8 de septiembre de 2026",
+        location: "San Salvador, 8 de septiembre de 2026",
+        source: "Instituto de Nutrición de Centro América y Panamá (INCAP).",
+        mainImg: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=800&q=80",
+        summary: "Una alimentación variada basada en frutas, verduras y cereales integrales aporta fibra, vitaminas esenciales y antioxidantes para el organismo.",
+        paragraphs: [
+          "Nutricionistas hicieron un llamado a la población a adoptar la filosofía del 'Plato Consciente', seleccionando ingredientes naturales sobre alimentos ultraprocesados.",
+          "Aprovechar la producción de frutas de estación no solo beneficia la salud digestiva, sino que apoya la economía de los pequeños agricultores locales.",
+          "(imagen)",
+          "Diversos programas comunitarios promueven huertos escolares y familiares para fomentar la seguridad alimentaria."
+        ],
+        inlineImages: [
+          "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80"
+        ]
+      },
+      {
+        id: 33,
+        category: "Salud",
+        subCategory: "Antes que Después",
+        title: "Kilómetros Rosa prepara nueva edición para promover la prevención del cáncer",
+        author: "Karina Elizabeth Vela Pineda",
+        date: "Martes 22 de septiembre de 2026",
+        location: "San Salvador, 22 de septiembre de 2026",
+        source: "ElSalvador.com y Diario El Mundo, información publicada en septiembre de 2026.",
+        mainImg: "https://sostenibilidad.sv/wp-content/uploads/2026/09/Banco-Promerica-KM-Rosa-2-1024x576.jpeg",
+        summary: "La cuarta edición de Kilómetros Rosa se realizará el próximo domingo 4 de octubre para promover la prevención y detección temprana del cáncer.",
+        paragraphs: [
+          "La cuarta edición de Kilómetros Rosa se realizará el próximo domingo 4 de octubre en El Salvador como parte de una iniciativa destinada a promover la prevención.",
+          "La carrera tendrá como punto de salida y meta el Centro Comercial La Gran Vía a las 6:30 de la mañana.",
+          "(imagen)",
+          "Los fondos recaudados apoyarán exámenes de detección temprana para mujeres de escasos recursos."
+        ],
+        inlineImages: [
+          "https://cdn-pro.elsalvador.com/wp-content/uploads/2026/09/Kilometros-Rosa-elsalvador.com-1-1024x768.jpg"
+        ]
+      },
+      {
+        id: 34,
+        category: "Salud",
+        subCategory: "La Salud del Futuro",
+        title: "El Salvador podrá adquirir nueva PrEP inyectable para prevenir el VIH",
+        author: "Cristian Daniel Portillo Rivera",
+        date: "Miércoles 23 de septiembre de 2026",
+        location: "San Salvador, 23 de septiembre de 2026",
+        source: "ElSalvador.com, con información de la OPS, OMS, FDA y CDC.",
+        mainImg: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=800&q=80",
+        summary: "El Salvador fue incluido entre los países de América Latina y el Caribe que podrán adquirir lenacapavir, un medicamento inyectable preventivo de aplicación semestral.",
+        paragraphs: [
+          "El Salvador fue incluido entre los países de América Latina y el Caribe que podrán adquirir lenacapavir, un medicamento inyectable utilizado como profilaxis preexposición.",
+          "La Organización Panamericana de la Salud anunció un acuerdo que permitirá acceder al tratamiento mediante los Fondos Rotatorios Regionales.",
+          "(imagen)",
+          "El fármaco requiere únicamente de dos aplicaciones al año, marcando un hito en las estrategias globales de salud pública preventiva."
+        ],
+        inlineImages: [
+          "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=800&q=80"
+        ]
+      }
+    ];
+
+    let previousScreen = 'view-home';
+
+    const heroWrapper = document.getElementById('heroParallax');
+    const layerContainer = document.getElementById('layerContainer');
+
+    if (heroWrapper && layerContainer) {
+      heroWrapper.addEventListener('mousemove', (e) => {
+        const rect = heroWrapper.getBoundingClientRect();
+        const x = e.clientX - rect.left - (rect.width / 2);
+        const y = e.clientY - rect.top - (rect.height / 2);
+
+        const rotateX = (-y / rect.height) * 16;
+        const rotateY = (x / rect.width) * 16;
+
+        layerContainer.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      });
+
+      heroWrapper.addEventListener('mouseleave', () => {
+        layerContainer.style.transform = `rotateX(0deg) rotateY(0deg)`;
+      });
+    }
+
+    function navigateTo(screenId, navElement = null) {
+      const currentActive = document.querySelector('.screen-view.active');
+      if (currentActive) {
+        previousScreen = currentActive.id;
+      }
+
+      document.querySelectorAll('.screen-view').forEach(view => view.classList.remove('active'));
+      
+      const target = document.getElementById(screenId);
+      if (target) {
+        target.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      if (navElement) {
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        navElement.classList.add('active');
+      }
+    }
+
+    function filterBySub(subName) {
+      document.getElementById('sectionTitle').innerText = "Subsección: " + subName;
+      const filtered = articlesData.filter(a => a.subCategory.toLowerCase() === subName.toLowerCase());
+      renderNewsGrid(filtered, 'sectionNewsGrid');
+      navigateTo('view-section');
+    }
+
+    function navigateToDetail(articleId) {
+      const article = articlesData.find(a => a.id === articleId);
+      if (!article) return;
+
+      document.getElementById('artCategory').innerText = article.category;
+      document.getElementById('artSubCategory').innerText = article.subCategory;
+      document.getElementById('artTitle').innerText = article.title;
+      document.getElementById('artAuthor').innerText = article.author;
+      document.getElementById('artDate').innerText = article.date;
+      document.getElementById('artLocation').innerText = article.location;
+      document.getElementById('artSource').innerText = article.source;
+
+      const contentBox = document.getElementById('artContent');
+      contentBox.innerHTML = '';
+
+      if (article.mainImg) {
+        const mainImgEl = document.createElement('img');
+        mainImgEl.src = article.mainImg;
+        mainImgEl.alt = article.title;
+        mainImgEl.className = 'article-img shadow-sm';
+        contentBox.appendChild(mainImgEl);
+      }
+
+      let imgIdx = 0;
+      article.paragraphs.forEach(p => {
+        if (p.toLowerCase() === "(imagen)") {
+          if (article.inlineImages && article.inlineImages[imgIdx]) {
+            const inlineImgEl = document.createElement('img');
+            inlineImgEl.src = article.inlineImages[imgIdx];
+            inlineImgEl.alt = "Imagen de la noticia";
+            inlineImgEl.className = 'article-img shadow-sm my-3';
+            contentBox.appendChild(inlineImgEl);
+            imgIdx++;
+          }
+        } else {
+          const para = document.createElement('p');
+          para.innerText = p;
+          contentBox.appendChild(para);
+        }
+      });
+
+      renderComments(articleId);
+      document.getElementById('commentForm').dataset.articleId = articleId;
+
+      navigateTo('view-article');
+    }
+
+    function goBackToPrevious() {
+      navigateTo(previousScreen || 'view-home');
+    }
+
+    function renderNewsGrid(articles, targetContainerId) {
+      const container = document.getElementById(targetContainerId);
+      if (!container) return;
+
+      if (articles.length === 0) {
+        container.innerHTML = `
+          <div class="col-12 text-center py-5">
+            <div class="alert alert-light border border-dark p-4">
+              <i class="bi bi-newspaper fs-1 text-muted"></i>
+              <h4 class="mt-3 fw-bold">Sin noticias disponibles</h4>
+              <p class="text-muted m-0">Actualmente no existen notas publicadas dentro de esta categoría.</p>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = articles.map(art => `
+        <div class="col-md-6 col-lg-4">
+          <div class="card card-win h-100">
+            <div class="card-img-wrapper">
+              <img src="${art.mainImg}" alt="${art.title}">
+            </div>
+            <div class="card-body d-flex flex-column p-4">
+              <div class="d-flex gap-1 mb-2 flex-wrap">
+                <span class="badge badge-maquilishuat mb-1">${art.category}</span>
+                <span class="badge bg-dark text-white mb-1">${art.subCategory}</span>
+              </div>
+              <h5 class="card-title fw-bold" style="color: var(--color-azul-tinta);">${art.title}</h5>
+              <p class="card-text text-muted flex-grow-1 small">${art.summary}</p>
+              <div class="border-top pt-2 mt-2 mb-3 text-muted" style="font-size: 0.78rem;">
+                <div><i class="bi bi-person"></i> ${art.author}</div>
+                <div><i class="bi bi-calendar3"></i> ${art.date}</div>
+              </div>
+              <button class="btn btn-win-primary align-self-start w-100 text-center" onclick="navigateToDetail(${art.id})">
+                Leer Noticia Completa <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      const badgeCount = document.getElementById('artCountBadge');
+      if (badgeCount && targetContainerId === 'newsGrid') {
+        badgeCount.innerText = `${articles.length} Artículos Publicados`;
+      }
+    }
+
+    function getUsersFromDB() {
+      const users = localStorage.getItem('win_users_db_secure');
+      return users ? JSON.parse(users) : [
+        { id: 67, name: "Daniel Pérez", email: "daniel@win.sv", pass: "1234", interest: "Deportes (En Cancha)" },
+        { id: 102, name: "Alejandra Díaz", email: "alejandra@win.sv", pass: "1234", interest: "Cultura (Raíces)" },
+        { id: 103, name: "Cristian Portillo", email: "cristian@win.sv", pass: "1234", interest: "Entretenimiento (Pantalla y Play)" },
+        { id: 104, name: "Karina Vela", email: "karina@win.sv", pass: "1234", interest: "Salud (Bienestar Real)" },
+        { id: 105, name: "Raúl Landaverde", email: "raul@win.sv", pass: "1234", interest: "Economía (Plata y Números)" },
+        { id: 106, name: "Edenilson Batres", email: "edenilson@win.sv", pass: "1234", interest: "Cultura (Raíces)" }
+      ];
+    }
+
+    function saveUsersToDB(usersArray) {
+      localStorage.setItem('win_users_db_secure', JSON.stringify(usersArray));
+      renderUsersTable();
+    }
+
+    function showAuthGifModal(title, subtext, callback) {
+      document.getElementById('gifModalTitle').innerText = title;
+      document.getElementById('gifModalSub').innerText = subtext;
+      
+      const modalEl = document.getElementById('authGifModal');
+      const bsModal = new bootstrap.Modal(modalEl);
+      bsModal.show();
+
+      setTimeout(() => {
+        bsModal.hide();
+        if (callback) callback();
+      }, 3000);
+    }
+
+    function handleRegister(e) {
+      e.preventDefault();
+      const name = document.getElementById('regName').value;
+      const email = document.getElementById('regEmail').value;
+      const pass = document.getElementById('regPass').value;
+      const interest = document.getElementById('regInterest').value;
+
+      const users = getUsersFromDB();
+      const existing = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+
+      if (existing) {
+        alert('El correo ya está registrado en la base de datos. Por favor inicia sesión.');
+        return;
+      }
+
+      const newUser = {
+        id: Date.now().toString().slice(-4),
+        name,
+        email,
+        pass,
+        interest
+      };
+
+      users.push(newUser);
+      saveUsersToDB(users);
+
+      showAuthGifModal(`¡Bienvenido(a), ${newUser.name}!`, 'Creando tu perfil en W.I.N...', () => {
+        setSession(newUser);
+        document.getElementById('userForm').reset();
+      });
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      const pass = document.getElementById('loginPass').value;
+
+      const users = getUsersFromDB();
+      const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.pass === pass);
+
+      if (user) {
+        showAuthGifModal(`¡Hola de nuevo, ${user.name}!`, 'Iniciando sesión en tu cuenta...', () => {
+          setSession(user);
+        });
+      } else {
+        alert('Credenciales incorrectas. Revisa tu correo o contraseña.');
+      }
+    }
+
+    function setSession(user) {
+      localStorage.setItem('win_active_session', JSON.stringify(user));
+      updateSessionUI();
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('win_active_session');
+      updateSessionUI();
+      alert('Sesión cerrada correctamente.');
+    }
+
+    function updateSessionUI() {
+      const activeSession = localStorage.getItem('win_active_session');
+      const authTabs = document.getElementById('authTabs');
+      const authTabContent = document.getElementById('authTabContent');
+      const sessionPanel = document.getElementById('activeSessionPanel');
+      const navBtn = document.getElementById('navAuthBtn');
+
+      if (activeSession) {
+        const user = JSON.parse(activeSession);
+        authTabs.classList.add('d-none');
+        authTabContent.classList.add('d-none');
+        sessionPanel.classList.remove('d-none');
+
+        document.getElementById('sessionUserName').innerText = user.name;
+        document.getElementById('sessionUserEmail').innerText = `${user.email} | Interés: ${user.interest}`;
+        navBtn.innerHTML = `<i class="bi bi-person-check-fill"></i> ${user.name.split(' ')[0]}`;
+      } else {
+        authTabs.classList.remove('d-none');
+        authTabContent.classList.remove('d-none');
+        sessionPanel.classList.add('d-none');
+        navBtn.innerHTML = `<i class="bi bi-person-circle"></i> Iniciar Sesión`;
+      }
+    }
+
+    function renderUsersTable() {
+      const tbody = document.getElementById('usersTableBody');
+      const users = getUsersFromDB();
+
+      if (!tbody) return;
+
+      tbody.innerHTML = users.map(u => `
+        <tr>
+          <td><strong>#${u.id}</strong></td>
+          <td>${u.name}</td>
+          <td>${u.email}</td>
+          <td><span class="badge badge-maquilishuat">${u.interest}</span></td>
+        </tr>
+      `).join('');
+    }
+
+    function getCommentsFromDB() {
+      const comments = localStorage.getItem('win_comments_db');
+      return comments ? JSON.parse(comments) : {};
+    }
+
+    function renderComments(articleId) {
+      const allComments = getCommentsFromDB();
+      const list = document.getElementById('commentsList');
+      const articleComments = allComments[articleId] || [];
+
+      if (articleComments.length === 0) {
+        list.innerHTML = `<p class="text-muted small">No hay comentarios aún. ¡Sé el primero en opinar!</p>`;
+        return;
+      }
+
+      list.innerHTML = articleComments.map(c => `
+        <div class="p-3 mb-2 border border-dark bg-white">
+          <strong style="color: var(--color-azul-tinta);"><i class="bi bi-person-circle"></i> ${c.user}</strong>
+          <p class="mb-0 mt-1 small">${c.text}</p>
+        </div>
+      `).join('');
+    }
+
+    function saveComment(e) {
+      e.preventDefault();
+      const articleId = document.getElementById('commentForm').dataset.articleId;
+      const user = document.getElementById('commentUser').value;
+      const text = document.getElementById('commentText').value;
+
+      const allComments = getCommentsFromDB();
+      if (!allComments[articleId]) {
+        allComments[articleId] = [];
+      }
+
+      allComments[articleId].push({ user, text });
+      localStorage.setItem('win_comments_db', JSON.stringify(allComments));
+
+      document.getElementById('commentUser').value = '';
+      document.getElementById('commentText').value = '';
+      renderComments(articleId);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderNewsGrid(articlesData, 'newsGrid');
+      renderUsersTable();
+      updateSessionUI();
+    });
+  </script>
+</body>
+</html>
